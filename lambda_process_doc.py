@@ -61,9 +61,43 @@ def parse_document(textract_resp):
         'given_name': 'unknown',
         'context': []
     }
+    if textract_resp == {}:
+        return resp
 
     linelist = get_lines_from_textract(textract_resp)
+    wordlist = get_words_from_textract(textract_resp)
+    wordlist_standardized = [w.lower() for w in wordlist]
     resp['context'] = linelist
+    print(wordlist_standardized)
+    
+    # Passport
+    PASSPORT_PHRASE = ['passport', 'paspor', 'pasaporte', 'pasport', 'hô chiéu']
+    if any(x in wordlist_standardized for x in PASSPORT_PHRASE):
+        if 'indonesia' in wordlist_standardized:
+            resp['doctype'] = 'passport'
+            resp['country'] = 'Indonesia'
+            print(resp)
+            return resp
+
+        if 'malaysia' in wordlist_standardized:
+            resp['doctype'] = 'passport'
+            resp['country'] = 'Malaysia'
+            return resp
+
+        if 'philippines' in wordlist_standardized:
+            resp['doctype'] = 'passport'
+            resp['country'] = 'Philippines'
+            return resp
+
+        if 'thailand' in wordlist_standardized or 'thai' in wordlist_standardized:
+            resp['doctype'] = 'passport'
+            resp['country'] = 'Thailand'
+            return resp
+
+        if 'vietnam' in wordlist_standardized:
+            resp['doctype'] = 'passport'
+            resp['country'] = 'Vietnam'
+            return resp
 
     # Indonesian
     if 'NIK' in linelist or 'Provinsi' in linelist:
@@ -79,12 +113,12 @@ def parse_document(textract_resp):
     # Phillipines
     if 'Philippine Identification Card' in linelist:
         resp['doctype'] = 'identity_card'
-        resp['country'] = 'Philippine'
+        resp['country'] = 'Philippines'
         return resp
 
     if all(x in linelist for x in ['LAND TRANSPORTATION OFFICE', 'REPUBLIC OF THE PHILLIPINES']):
         resp['doctype'] = 'driving_license'
-        resp['country'] = 'Philippine'
+        resp['country'] = 'Philippines'
         return resp
 
     # Malaysian
@@ -119,6 +153,8 @@ def parse_document(textract_resp):
         resp['doctype'] = 'driving_license'
         resp['country'] = 'Vietnam'
         return resp
+    
+    return resp
 
 def lambda_handler(event, context):
     #print("Received event: " + json.dumps(event, indent=2))
@@ -139,6 +175,7 @@ def lambda_handler(event, context):
     imageBase64 = event['base64Image']
     print(type(imageBase64))
     resp = textract_process_docs(textractClient, imageBase64)
+    print('textract response:', resp)
 
     parsed_resp = parse_document(resp)
     print(parsed_resp)
@@ -153,7 +190,6 @@ def lambda_handler(event, context):
         # }),
         'body': {
             'status_code': 200,
-            'hello': 'lambda',
             'textract_response': parsed_resp
         }
     }
