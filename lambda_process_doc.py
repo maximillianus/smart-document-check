@@ -11,9 +11,12 @@ textractClient = boto3.client('textract')
 def textract_process_s3(client, bucket, document):
     resp = {}
     try:
-        resp = client.analyze_document(
-            Document={'S3Object': {'Bucket': bucket, 'Name': document}},
-            FeatureTypes=['FORMS']
+        # resp = client.analyze_document(
+        #     Document={'S3Object': {'Bucket': bucket, 'Name': document}},
+        #     FeatureTypes=['FORMS']
+        #     )
+        resp = client.detect_document_text(
+            Document={'S3Object': {'Bucket': bucket, 'Name': document}}
             )
     except Exception as e:
         print('Error processing textract-s3')
@@ -24,9 +27,12 @@ def textract_process_s3(client, bucket, document):
 def textract_process_docs(client, image):
     resp = {}
     try:
-        resp = client.analyze_document(
-            Document={'Bytes': base64.b64decode(image)},
-            FeatureTypes=['FORMS']
+        # resp = client.analyze_document(
+        #     Document={'Bytes': base64.b64decode(image)},
+        #     FeatureTypes=['FORMS']
+        #     )
+        resp = client.detect_document_text(
+            Document={'Bytes': base64.b64decode(image)}
             )
     except Exception as e:
         print('Error processing textract-s3')
