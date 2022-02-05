@@ -10,7 +10,7 @@ export class CdkStack extends Stack {
     super(scope, id, props);
 
     // The code that defines your stack goes here
-    const lambdaFunctionName = 'textract-upload-document'
+    const lambdaFunctionName = this.node.tryGetContext('lambdafn') || 'textract-upload-document';
     const importedLambda = lambda.Function.fromFunctionArn(
       this,
       lambdaFunctionName,
