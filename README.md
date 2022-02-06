@@ -2,10 +2,9 @@
 This is an API to identify PII document using Textract. This API is deployed through API Gateway and Lambda function which calls Textract endpoint. The deployment of this API uses AWS CDK as Infrastructure as a Code tool to ensure consistent, reliable, and repeatable infrastructure creation. There are a few prerequisites for using AWS CDK including Typescript and AWS CLI installation, so user has to ensure that those tools are also installed.
 
 ## Steps to deploy API
-1. Create lambda execution roles allowing access to Textract
-2. Create a lambda function using `lambda_process_doc.py` code
-3. Create and deploy API Gateway resource using AWS CDK in `cdk/` dir. CDK deployment & prerequisite instruction can be found [below](#steps-to-install-aws-cdk).
-4. Upload identity documents and start getting result
+1. This API is deployed through CDK, please install AWS CDK and its pre-requisites
+2. Create and deploy Lambda and API Gateway resource using AWS CDK in `cdk/` directory by running `npx cdk deploy`. See the instruction [below](#steps-to-install-aws-cdk) for more details
+3. Upload identity documents and start getting result
   
   <br>
   
