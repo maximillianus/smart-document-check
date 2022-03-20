@@ -37,7 +37,7 @@ export class CdkStack extends Stack {
       memorySize: 128,
       timeout: Duration.seconds(5),
       handler: 'lambda_process_document.lambda_handler',
-      code: lambda.Code.fromAsset(path.join(__dirname, '../src/')),
+      code: lambda.Code.fromAsset(path.join(__dirname, '../../src/')),
       role: lambdaExecutionRole
     });
 
